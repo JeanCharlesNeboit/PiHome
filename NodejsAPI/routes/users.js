@@ -6,7 +6,6 @@ var express = require('express');
 
 var router = express.Router();
 
-var secretKey = "don't share this key";
 function createToken(user) {
   return jwt.sign(_.omit(user, 'password'), config.secretKey, { expiresIn: 60*60*5 });
 }

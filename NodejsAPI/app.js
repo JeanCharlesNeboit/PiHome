@@ -1,4 +1,6 @@
+// dependencies
 var express = require('express');
+var ipfilter = require('express-ipfilter').IpFilter;
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -6,14 +8,26 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
+// configuration file
+var config = require('./config');
+
+// API routes
 var index = require('./routes/index');
 var users = require('./routes/users');
+var quotes = require('./routes/quotes');
 
+// whitelist the following IPs
+var IPs = config.allowIPs;
+
+// express server
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// allow IPs whitelist
+app.use(ipfilter(IPs, {mode: 'allow'}));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -26,6 +40,7 @@ app.use(cors());
 
 app.use('/', index);
 app.use('/users', users);
+app.use(quotes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -3,15 +3,20 @@
 npm install
 ```
 
-- add `db_config.json` file to `./database`
-- then add database access authorization
-
+- add `db_config.json` file in `./database`
   ```json
   {
     "host" : "IP",
     "user" : "USERNAME",
     "password" : "PASSWORD",
     "database" : "DATABASE"
+  }
+  ```
+- add `config.json` file
+  ```json
+  {
+    "secretKey": "SECRETKEY",
+    "allowIPs": ["IP"]
   }
   ```
 

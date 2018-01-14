@@ -59,3 +59,6 @@ typings/
 
 # database access configuration file
 **/db_config.json
+
+# api configuration file
+config.json
