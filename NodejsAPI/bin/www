@@ -6,7 +6,8 @@
 
 var app = require('../app');
 var debug = require('debug')('web:server');
-var http = require('http');
+var https = require('https');
+var fs = require('fs');
 var db = require('../database/db');
 
 /**
@@ -20,7 +21,12 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var option = {
+  key: fs.readFileSync("/etc/letsencrypt/archive/paoriginal.hopto.org/privkey1.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/archive/paoriginal.hopto.org/fullchain1.pem"),
+  ca: fs.readFileSync("/etc/letsencrypt/archive/paoriginal.hopto.org/chain1.pem")
+}
+var server = https.createServer(option, app);
 
 /**
  * Connect to db.
@@ -32,7 +38,9 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, function() {
+  console.log('Server started on port %d', server.address().port);
+});
 server.on('error', onError);
 server.on('listening', onListening);
 

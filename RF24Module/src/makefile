@@ -3,10 +3,9 @@ SRC=main.cpp
 EXE=build/main
 
 CXXFLAGS+=-Wall -Wextra -MMD -g -O2
-LDFLAGS= /usr/local/lib/librf24.so.1.3.0
-RFOBJ=#RF24.o spi.o bcm2835.o
+LDFLAGS= /usr/local/lib/librf24.so.1.3.0 /usr/local/lib/librf24network.so.1.0
 
-OBJ=$(addprefix build/,$(SRC:.cpp=.o)) $(addprefix ../lib/RF24/,$(RFOBJ))
+OBJ=$(addprefix build/,$(SRC:.cpp=.o))
 DEP=$(addprefix build/,$(SRC:.cpp=.d))
 
 all: $(OBJ)
