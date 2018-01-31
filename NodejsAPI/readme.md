@@ -19,6 +19,14 @@ npm install
     "allowIPs": ["IP"]
   }
   ```
+- add `certificates.json` file
+  ```json
+  {
+    "key": "private key path",
+    "cert": "cert path",
+    "ca": "ca path"
+  }
+  ```
 
 ## Start
 ```bash

@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
+
 // configuration file
 var config = require('./config');
 
@@ -15,6 +16,7 @@ var config = require('./config');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var quotes = require('./routes/quotes');
+//var video = require('./routes/video');
 
 // whitelist the following IPs
 var IPs = config.allowIPs;
@@ -43,13 +45,16 @@ app.use(cors());
 app.use('/', index);
 app.use('/users', users);
 app.use(quotes);
+//app.use('/', video);
 
+/*
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
+*/
 
 // error handler
 app.use(function(err, req, res, next) {
