@@ -2,17 +2,18 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <RF24/nRF24L01.h>
-#include <RF24/RF24.h>
+#include <unistd.h>
+#include "RF24/nRF24L01.h"
+#include "RF24/RF24.h"
 
 using namespace std;
 
-RF24 radio(22, 8, BCM2835_SPI_SPEED_8MHZ);
+RF24 radio(22, 0);
 const uint64_t address = 0xE8E8F0F0E1LL;
 
 void setup() {
-    // put your setup code here, to run once:	
-    
+    // put your setup code here, to run once:
+
 	// Transmitter
 	radio.begin();
     	radio.openWritingPipe(address);
@@ -26,14 +27,14 @@ void loop() {
     // Transmitter
     const char text[] = "Hello World";
     radio.write(&text, sizeof(text));
-    delay(1000);
+    sleep(1);
 }
 
 int main() {
 	cout << "Raspberry Pi" << endl;
 	setup();
 	for(;;) {
-		loop();		
+		loop();
 	}
 	return 0;
 }
