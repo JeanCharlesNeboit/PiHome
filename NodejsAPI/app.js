@@ -16,7 +16,7 @@ var config = require('./config');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var quotes = require('./routes/quotes');
-//var video = require('./routes/video');
+var rf = require('./routes/rf24');
 
 // whitelist the following IPs
 var IPs = config.allowIPs;
@@ -45,7 +45,7 @@ app.use(cors());
 app.use('/', index);
 app.use('/users', users);
 app.use(quotes);
-//app.use('/', video);
+app.use('/', rf);
 
 /*
 // catch 404 and forward to error handler
