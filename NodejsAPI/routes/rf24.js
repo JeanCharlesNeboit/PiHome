@@ -23,7 +23,6 @@ router.get('/rf24', function(req, res) {
     if (typeof response.data === 'string') {
         console.log("Received: '" + response.data + "'");
         res.status(201).send(response.data);
-        client.close();
     }
   };
 });
