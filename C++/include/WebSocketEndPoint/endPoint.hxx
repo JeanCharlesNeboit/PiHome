@@ -1,15 +1,15 @@
-#include "WebSocketRoutes/routes.hpp"
+#include "WebSocketEndPoint/endPoint.hpp"
 
 using namespace std;
 
-namespace Web {
+namespace WebSocket {
   template<typename ServerType>
-  Routes<ServerType>::Routes(ServerType& s) : server(s) {
+  EndPoint<ServerType>::EndPoint(ServerType& s) : server(s) {
 
   }
 
   template<typename ServerType>
-  void Routes<ServerType>::addRoute() {
+  void EndPoint<ServerType>::addRoute() {
     auto &echo = server.endpoint["^/echo/?$"];
 
     echo.on_message = [](shared_ptr<typename ServerType::Connection> connection, shared_ptr<typename ServerType::Message> message) {

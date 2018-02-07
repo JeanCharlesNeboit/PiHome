@@ -3,8 +3,9 @@ SRC=$(wildcard src/*.cpp)
 EXE=bin/main
 
 CXXFLAGS= -Wall -Wextra -MMD -g -O2 -std=c++11
-INCLUDES= -Iinclude
-LDFLAGS= -Llib -lrf24 -pthread -lboost_system -lcrypto -lssl
+INCLUDES= -Iinclude -I/usr/include/cppconn
+LDFLAGS= -pthread -lboost_system -lcrypto -lssl -lmysqlcppconn
+LDFLAGS+= -Llib -lrf24
 
 #OBJ=$(addprefix build/,$(SRC:.cpp=.o))
 #DEP=$(addprefix build/,$(SRC:.cpp=.d))

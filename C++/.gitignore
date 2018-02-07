@@ -35,3 +35,6 @@
 
 # Build folder
 **/build
+
+# db_config file
+/include/Config/db_config.hpp

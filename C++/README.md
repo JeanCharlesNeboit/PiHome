@@ -1,29 +1,81 @@
 # C++
 
-## RF24 library
+### Dependencies
+- [Simple-Web-Socket-Server library](https://github.com/eidheim/Simple-WebSocket-Server.git)
+- [Simple-Web-Server](https://github.com/eidheim/Simple-Web-Server.git)
+- [RF24](https://github.com/nRF24/RF24.git)
 
+### Adding RF24
 ```shell
 git clone https://github.com/nRF24/RF24.git
 cd lib/RF24/
 make all && sudo make install
 ```
 
-- Installing Libs to **/usr/local/lib** for name `librf24.so.1.3.0`
-- Installing Headers to **/usr/local/include/RF24**
+#### Include & lib
+include | lib
+------- | ---
+`/usr/local/include/RF24` | `/usr/local/lib/librf24.so`
 
-``` c++
+```c++
 #include <RF24/nRF24L01.h>
 #include <RF24/RF24.h>
 ```
 
-## SimpleWebSocket library
+### Adding Boost
+```shell
+sudo apt-get install libboost-all-dev
+```
 
-> https://github.com/eidheim/Simple-WebSocket-Server.git
+#### Include & lib
+include | lib
+------- | ---
+`/usr/include/boost` | `/usr/lib/x86-64-linux/`
 
-## Boost
+### Adding MySQL
+```shell
+sudo apt-get install libmysqlcppconn-dev
+```
 
-> sudo apt-get install libboost-all-dev
+#### Include & lib
+include | lib
+------- | ---
+`/usr/include/cppconn` | `/usr/local/lib/libmysqlcppconn.so`
 
-## Run
+```c++
+#include <mysql_connection.h>
+#include <driver.h>
+#include <exception.h>
+#include <resultset.h>
+#include <statement.h>
+```
 
-> ./bin/main
+### Adding Configuration
+
+```shell
+mkdir ./include/Config
+cd ./include/Config
+touch db_config.hpp
+```
+
+```c++
+// db_config.hpp
+#ifndef DB_CONFIG_HPP
+#define DB_CONFIG_HPP
+
+#include <string>
+
+namespace config {
+  const std::string HOST = "HOST";
+  const std::string USERNAME = "USERNAME";
+  const std::string PASSWORD = "PASSWORD";
+}
+
+#endif
+```
+
+### Compile and Run
+```shell
+make
+./bin/main
+```

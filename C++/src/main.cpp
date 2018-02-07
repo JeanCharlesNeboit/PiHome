@@ -1,20 +1,42 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
+
+/* RF24 */
 #include "RF24/nRF24L01.h"
 #include "RF24/RF24.h"
-#include "WebSocket/client_wss.hpp"
-#include "WebSocket/server_wss.hpp"
-#include "WebSocketRoutes/routes.hpp"
+
+/* WebSocketServer & WebServer & WebSocketEndPoint */
+#include "WebSocketServer/client_wss.hpp"
+#include "WebSocketServer/server_wss.hpp"
+#include "WebServer/client_https.hpp"
+#include "WebServer/server_https.hpp"
+#include "WebSocketEndPoint/endPoint.hpp"
+
+/* MySQL */
+#include <mysql_connection.h>
+#include <driver.h>
+#include <exception.h>
+#include <resultset.h>
+#include <statement.h>
+
+/* Configuration */
+#include "Config/db_config.hpp"
 
 using namespace std;
+using namespace sql;
 
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 using WsClient = SimpleWeb::SocketClient<SimpleWeb::WS>;
 using WssServer = SimpleWeb::SocketServer<SimpleWeb::WSS>;
 using WssClient = SimpleWeb::SocketClient<SimpleWeb::WSS>;
 
-using Route = Web::Routes<WsServer>;
+using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
+using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
+using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
+using HttpClient = SimpleWeb::Client<SimpleWeb::HTTP>;
+
+using EndPoint = WebSocket::EndPoint<WsServer>;
 
 /*RF24 radio(22, 0);
 const uint64_t address = 0xE8E8F0F0E1LL;
@@ -48,16 +70,21 @@ int main() {
 }*/
 
 int main() {
+	/**
+	 * WebSocket Server
+	 */
+
 	//WssServer server("/etc/letsencrypt/archive/paoriginal.hopto.org/fullchain1.pem", "/etc/letsencrypt/archive/paoriginal.hopto.org/privkey1.pem");
-	WsServer server;
-  server.config.port = 8080;
+	WsServer wsServer;
+  wsServer.config.port = 8081;
 
-	Route route(server);
-	route.addRoute();
+	EndPoint endPoint(wsServer);
+	endPoint.addRoute();
 
-  thread server_thread([&server]() {
+  thread wsServer_thread([&wsServer]() {
     // Start WS-server
-    server.start();
+		cout << "Starting WebSocket Server..." << endl;
+    wsServer.start();
   });
 
   // Wait for server to start so that the client can connect
@@ -92,7 +119,53 @@ int main() {
   };
 
   client.start();*/
-	server_thread.join();
+
+	/**
+	 * Web HTTP Server
+	 */
+	HttpServer httpServer;
+  httpServer.config.port = 8080;
+
+	// GET-example for the path /match/[number], responds with the matched string in path (number)
+  // For instance a request GET /match/123 will receive: 123
+  httpServer.resource["^/match/([0-9]+)$"]["GET"] = [](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    response->write(request->path_match[1]);
+  };
+
+	httpServer.on_error = [](shared_ptr<HttpServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/) {
+    // Handle errors here
+    // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
+  };
+
+	thread httpServer_thread([&httpServer]() {
+		// Start HTTP-server
+		cout << "Starting HTTP Server..." << endl;
+		httpServer.start();
+	});
+
+	// Wait for server to start so that the client can connect
+  this_thread::sleep_for(chrono::seconds(1));
+
+	/**
+	 * MySQL
+	 */
+	sql::Driver *driver;
+  sql::Connection *connect;
+
+	driver = get_driver_instance();
+	connect = driver->connect(config::HOST, config::USERNAME, config::PASSWORD);
+	if (connect) {
+		cout << "Connected to database" << endl;
+	}
+	else {
+		cout << "Unable to connect to database" << endl;
+	}
+
+	/**
+	 * Wait Threads
+	 */
+	wsServer_thread.join();
+	httpServer_thread.join();
 
 	return 0;
 }
