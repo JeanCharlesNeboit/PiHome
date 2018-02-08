@@ -4,7 +4,7 @@ EXE=bin/main
 
 CXXFLAGS= -Wall -Wextra -MMD -g -O2 -std=c++11
 INCLUDES= -Iinclude -I/usr/include/cppconn
-LDFLAGS= -pthread -lboost_system -lcrypto -lssl -lmysqlcppconn
+LDFLAGS= -pthread -lboost_system -lboost_thread -lcrypto -lssl -lmysqlcppconn
 LDFLAGS+= -Llib -lrf24
 
 #OBJ=$(addprefix build/,$(SRC:.cpp=.o))

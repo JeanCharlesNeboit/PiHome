@@ -1,5 +1,9 @@
 #include "WebSocketEndPoint/endPoint.hpp"
 
+/* RF24 */
+#include "RF24/nRF24L01.h"
+#include "RF24/RF24.h"
+
 using namespace std;
 
 namespace WebSocket {
@@ -18,6 +22,15 @@ namespace WebSocket {
       cout << "Server: Message received: \"" << message_str << "\" from " << connection.get() << endl;
       cout << "Client IP: \"" << connection.get()->remote_endpoint_address() << "\"" << endl;
       //cout << "Client Header: \"" << connection.get()->header.find("User-Agent")->second << "\"" << endl;
+
+      RF24 radio(22, 0);
+			const uint64_t address = 0xE8E8F0F0E1LL;
+
+			radio.begin();
+			radio.openWritingPipe(address);
+			radio.setPALevel(RF24_PA_MIN);
+			radio.stopListening();
+			radio.write(message_str.c_str(), message_str.size());
 
       cout << "Server: Sending message \"" << message_str << "\" to " << connection.get() << endl;
 
