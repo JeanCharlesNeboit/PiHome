@@ -5,7 +5,10 @@ EXE=bin/main
 CXXFLAGS= -Wall -Wextra -MMD -g -O2 -std=c++11
 INCLUDES= -Iinclude -I/usr/include/cppconn
 LDFLAGS= -pthread -lboost_system -lboost_thread -lcrypto -lssl -lmysqlcppconn
+
+#ifeq ($(shell uname -m), armv7l)
 LDFLAGS+= -Llib -lrf24
+#endif
 
 #OBJ=$(addprefix build/,$(SRC:.cpp=.o))
 #DEP=$(addprefix build/,$(SRC:.cpp=.d))

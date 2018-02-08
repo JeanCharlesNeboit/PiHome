@@ -1,7 +1,7 @@
 # C++
 
 ### Dependencies
-- [Simple-Web-Socket-Server library](https://github.com/eidheim/Simple-WebSocket-Server.git)
+- [Simple-Web-Socket-Server](https://github.com/eidheim/Simple-WebSocket-Server.git)
 - [Simple-Web-Server](https://github.com/eidheim/Simple-Web-Server.git)
 - [RF24](https://github.com/nRF24/RF24.git)
 
@@ -76,8 +76,9 @@ namespace config {
 
 ### Tunnel ssh IsiLabs
 
-> ssh IP_server_rebond -L PORT:IP:PORT
-> localhost:PORT
+> ssh ip -L port:host:port
+
+> localhost:port
 
 ### Compile and Run
 ```shell

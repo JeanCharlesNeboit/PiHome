@@ -1,5 +1,5 @@
-#ifndef WebSocketEndPoint_HPP
-#define WebSocketEndPoint_HPP
+#ifndef WEB_SOCKET_END_POINT_HPP
+#define WEB_SOCKET_END_POINT_HPP
 
 namespace WebSocket {
   template<typename ServerType>
@@ -11,7 +11,7 @@ namespace WebSocket {
     EndPoint(ServerType&);
     void addRoute();
   };
-} // namespace Web
+} // namespace WebSocket
 
 #include "WebSocketEndPoint/endPoint.hxx"
 
