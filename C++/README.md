@@ -69,6 +69,7 @@ namespace config {
   const std::string HOST = "HOST";
   const std::string USERNAME = "USERNAME";
   const std::string PASSWORD = "PASSWORD";
+  const std::string DATABASE = "DATABASE";
 }
 
 #endif

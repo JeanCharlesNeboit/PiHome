@@ -1,5 +1,8 @@
 #include "WebSocketEndPoint/endPoint.hpp"
+
+#include <unistd.h>
 #include "WebSocketServer/server_ws.hpp"
+#include "WebSocketServer/server_wss.hpp"
 
 /* RF24 */
 #include "RF24/nRF24L01.h"
@@ -30,23 +33,38 @@ namespace WebSocket {
       cout << "Client IP: \"" << connection.get()->remote_endpoint_address() << "\"" << endl;
       cout << "Client Header: \"" << connection.get()->header.find("User-Agent")->second << "\"" << endl;
 
-      ptree pt;
+      /*ptree pt;
       stringstream ss(message_str);
 			read_json(ss, pt);
 			string type = pt.get<string>("type");
-      cout << "Type: " << type << endl;
+      cout << "Type: " << type << endl;*/
 
 
-      #ifdef __arm__
+      //#ifdef __arm__
       RF24 radio(22, 0);
 			const uint64_t address = 0xE8E8F0F0E1LL;
+      const uint64_t readAddress = 0xE8E8F0F0E2LL;
 
 			radio.begin();
 			radio.openWritingPipe(address);
-			radio.setPALevel(RF24_PA_MIN);
-			radio.stopListening();
-			radio.write(message_str.c_str(), message_str.size());
-      #endif
+      radio.openReadingPipe(1, readAddress);
+			radio.setPALevel(RF24_PA_MAX);
+
+      int i = 0;
+      radio.startListening();
+      while(!radio.available() && i < 10) {
+        radio.stopListening();
+        radio.write(message_str.c_str(), message_str.size());
+        cout << "Send to Arduino" << endl;
+        radio.startListening();
+        usleep(50000);
+        i++;
+      }
+
+      char buf[10];
+      radio.read(&buf, sizeof(buf));
+      cout << buf << endl;
+      //#endif
 
       cout << "Server: Sending message \"" << message_str << "\" to " << connection.get() << endl;
 

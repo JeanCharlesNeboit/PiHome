@@ -26,6 +26,7 @@ namespace db {
 
     void connection();
     void disconnection();
+    void execute(std::string);
   };
 } // namespace db
 

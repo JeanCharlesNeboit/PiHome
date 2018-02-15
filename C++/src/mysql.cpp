@@ -29,6 +29,7 @@ namespace db {
     try {
   		driver = get_driver_instance();
   		connect = driver->connect(config::HOST, config::USERNAME, config::PASSWORD);
+      connect->setSchema(config::DATABASE);
   		if (connect) {
   			cout << "Connected to database" << endl;
   		}
@@ -52,6 +53,20 @@ namespace db {
   		cout << " (MySQL error code: " << e.getErrorCode();
   		cout << ", SQLState: " << e.getSQLState() << " )" << endl;
     }
+  }
+
+  void MySQL::execute(string request) {
+    sql::Statement *stmt;
+    try {
+      stmt = connect->createStatement();
+      stmt->executeQuery(request);
+    }
+    catch(SQLException &e) {
+      cout << "# ERR: " << e.what();
+      cout << " (MySQL error code: " << e.getErrorCode();
+      cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+    }
+    delete stmt;
   }
 
   MySQL MySQL::instance;

@@ -1,14 +1,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
 
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-
-/* RF24 */
-#include "RF24/nRF24L01.h"
-#include "RF24/RF24.h"
 
 /* WebSocketServer & WebServer */
 #include "WebSocketServer/client_wss.hpp"
@@ -20,7 +17,11 @@
 #include "WebSocketEndPoint/endPoint.hpp"
 #include "WebServerUrl/url.hpp"
 
+/* MySQL */
 #include "Database/mysql.hpp"
+
+/* API */
+#include "API/listen.hpp"
 
 using namespace std;
 using namespace boost::property_tree;
@@ -35,47 +36,17 @@ using HttpsClient = SimpleWeb::Client<SimpleWeb::HTTPS>;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 using HttpClient = SimpleWeb::Client<SimpleWeb::HTTP>;
 
-using EndPoint = WebSocket::EndPoint<WsServer>;
+// using EndPoint = WebSocket::EndPoint<WsServer>; ws
+using EndPoint = WebSocket::EndPoint<WssServer>; // wss
 using Url = WebServer::Url<HttpServer>;
-
-/*RF24 radio(22, 0);
-const uint64_t address = 0xE8E8F0F0E1LL;
-
-void setup() {
-// put your setup code here, to run once:
-
-// Transmitter
-radio.begin();
-radio.openWritingPipe(address);
-radio.setPALevel(RF24_PA_MIN);
-radio.stopListening();
-}
-
-void loop() {
-// put your main code here, to run repeatedly:
-
-// Transmitter
-const char text[] = "Hello World";
-radio.write(&text, sizeof(text));
-sleep(1);
-}
-
-int main() {
-cout << "Raspberry Pi" << endl;
-setup();
-for(;;) {
-loop();
-}
-return 0;
-}*/
 
 int main() {
 	/**
 	* WebSocket Server
 	*/
 
-	//WssServer server("/etc/letsencrypt/archive/paoriginal.hopto.org/fullchain1.pem", "/etc/letsencrypt/archive/paoriginal.hopto.org/privkey1.pem");
-	WsServer wsServer;
+	WssServer wsServer("/etc/letsencrypt/archive/paoriginal.hopto.org/fullchain1.pem", "/etc/letsencrypt/archive/paoriginal.hopto.org/privkey1.pem");
+	//WsServer wsServer;
 	wsServer.config.port = 8081;
 
 	EndPoint endPoint(wsServer);
@@ -139,10 +110,17 @@ int main() {
 	this_thread::sleep_for(chrono::seconds(1));
 
 	/**
+	 * API listen
+	 */
+	thread listenThread(api::listen);
+
+
+	/**
 	* Wait Threads
 	*/
 	wsServer_thread.join();
 	httpServer_thread.join();
+	listenThread.join();
 
 	return 0;
 }
