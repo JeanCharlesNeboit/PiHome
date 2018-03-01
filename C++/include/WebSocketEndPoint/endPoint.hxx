@@ -41,11 +41,11 @@ namespace WebSocket {
 
       //#ifdef __arm__
       RF24 radio(22, 0);
-			const uint64_t address = 0xE8E8F0F0E1LL;
+			const uint64_t writeAddress = 0xE8E8F0F0E1LL;
       const uint64_t readAddress = 0xE8E8F0F0E2LL;
 
 			radio.begin();
-			radio.openWritingPipe(address);
+			radio.openWritingPipe(writeAddress);
       radio.openReadingPipe(1, readAddress);
 			radio.setPALevel(RF24_PA_MAX);
 
