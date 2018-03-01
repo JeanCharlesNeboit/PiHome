@@ -13,7 +13,7 @@ using namespace std;
 
 namespace api {
   void listen() {
-    std::cout << "Listen Client" << std::endl;
+    /*std::cout << "Listen Client" << std::endl;
 
     RF24 radio(22, 0);
     char buffer[50] = "";
@@ -27,13 +27,14 @@ namespace api {
 
     while(1) {
       if (radio.available(&pipe)) {
+        cout << "Received" << endl;
         if (pipe == 2) {
           radio.read(buffer, sizeof(buffer));
           cout << buffer << endl;
-          db::MySQL::sharedInstance().execute("INSERT INTO Temperature (temperature, humidite, date, idRaspberry) VALUES("+string(buffer)+","+string(buffer)+",CURDATE(),1)");
+          db::MySQL::sharedInstance().execute("INSERT INTO Temperature (temperature, humidite, date, idRaspberry) VALUES("+string(buffer)+","+string(buffer)+",NOW(),"+to_string(1)+")");
         }
       }
       usleep(10000);
-    }
+    }*/
   }
 }

@@ -9,7 +9,7 @@ namespace WebSocket {
 
   public:
     EndPoint(ServerType&);
-    void addRoute();
+    void addArduinoRelayEndPoint();
   };
 } // namespace WebSocket
 

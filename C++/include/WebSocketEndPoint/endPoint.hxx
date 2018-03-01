@@ -23,10 +23,10 @@ namespace WebSocket {
   }
 
   template<typename ServerType>
-  void EndPoint<ServerType>::addRoute() {
-    auto &echo = server.endpoint["^/echo/?$"];
+  void EndPoint<ServerType>::addArduinoRelayEndPoint() {
+    auto &endPoint = server.endpoint["^/arduino/relay$"];
 
-    echo.on_message = [](shared_ptr<typename ServerType::Connection> connection, shared_ptr<typename ServerType::Message> message) {
+    endPoint.on_message = [](shared_ptr<typename ServerType::Connection> connection, shared_ptr<typename ServerType::Message> message) {
       auto message_str = message->string();
 
       cout << "Server: Message received: \"" << message_str << "\" from " << connection.get() << endl;
@@ -38,7 +38,6 @@ namespace WebSocket {
 			read_json(ss, pt);
 			string type = pt.get<string>("type");
       cout << "Type: " << type << endl;*/
-
 
       //#ifdef __arm__
       RF24 radio(22, 0);
@@ -61,15 +60,19 @@ namespace WebSocket {
         i++;
       }
 
-      char buf[10];
-      radio.read(&buf, sizeof(buf));
-      cout << buf << endl;
+      char buf[10] = "Failed";
+      if (i < 10) {
+        radio.read(&buf, sizeof(buf));
+        if (strcmp(buf, "ACK") == 0) {
+          strcpy(buf, "Succeed");
+        }
+      }
       //#endif
 
       cout << "Server: Sending message \"" << message_str << "\" to " << connection.get() << endl;
 
       auto send_stream = make_shared<typename ServerType::SendStream>();
-      *send_stream << message_str;
+      *send_stream << buf;
       // connection->send is an asynchronous function
       connection->send(send_stream, [](const SimpleWeb::error_code &ec) {
         if(ec) {
@@ -80,17 +83,17 @@ namespace WebSocket {
       });
     };
 
-    echo.on_open = [](shared_ptr<typename ServerType::Connection> connection) {
+    endPoint.on_open = [](shared_ptr<typename ServerType::Connection> connection) {
       cout << "Server: Opened connection " << connection.get() << endl;
     };
 
     // See RFC 6455 7.4.1. for status codes
-    echo.on_close = [](shared_ptr<typename ServerType::Connection> connection, int status, const string &) {
+    endPoint.on_close = [](shared_ptr<typename ServerType::Connection> connection, int status, const string &) {
       cout << "Server: Closed connection " << connection.get() << " with status code " << status << endl;
     };
 
     // See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
-    echo.on_error = [](shared_ptr<typename ServerType::Connection> connection, const SimpleWeb::error_code &ec) {
+    endPoint.on_error = [](shared_ptr<typename ServerType::Connection> connection, const SimpleWeb::error_code &ec) {
       cout << "Server: Error in connection " << connection.get() << ". "
            << "Error: " << ec << ", error message: " << ec.message() << endl;
     };

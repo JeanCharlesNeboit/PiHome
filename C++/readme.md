@@ -55,13 +55,12 @@ include | lib
 ```shell
 mkdir ./include/Config
 cd ./include/Config
-touch db_config.hpp
+touch config.hpp
 ```
 
 ```c++
-// db_config.hpp
-#ifndef DB_CONFIG_HPP
-#define DB_CONFIG_HPP
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
 
 #include <string>
 
@@ -70,6 +69,8 @@ namespace config {
   const std::string USERNAME = "USERNAME";
   const std::string PASSWORD = "PASSWORD";
   const std::string DATABASE = "DATABASE";
+  const std::string FULLCHAIN = "FULLCHAIN";
+  const std::string KEY = "KEY";
 }
 
 #endif

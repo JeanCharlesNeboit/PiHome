@@ -2,7 +2,7 @@
 #include <iostream>
 
 /* Configuration */
-#include "Config/db_config.hpp"
+#include "Config/config.hpp"
 
 using namespace std;
 using namespace sql;
@@ -60,13 +60,13 @@ namespace db {
     try {
       stmt = connect->createStatement();
       stmt->executeQuery(request);
+      delete stmt;
     }
     catch(SQLException &e) {
       cout << "# ERR: " << e.what();
       cout << " (MySQL error code: " << e.getErrorCode();
       cout << ", SQLState: " << e.getSQLState() << " )" << endl;
     }
-    delete stmt;
   }
 
   MySQL MySQL::instance;
