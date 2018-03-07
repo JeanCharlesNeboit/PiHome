@@ -1,0 +1,9 @@
+[Unit]
+Description=PiHome Nodejs service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/PiHome/NodejsAPI/bin/www
+
+[Install]
+WantedBy=network-online.target

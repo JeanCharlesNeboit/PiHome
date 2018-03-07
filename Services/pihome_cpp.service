@@ -1,0 +1,9 @@
+[Unit]
+Description=PiHome C++ service
+After=network-online.target
+
+[Service]
+ExecStart=/home/pi/PiHome/C++/bin/main
+
+[Install]
+WantedBy=network-online.target

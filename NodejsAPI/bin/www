@@ -7,6 +7,7 @@
 var express = require('express');
 var app = require('../app');
 var debug = require('debug')('web:server');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var db = require('../database/db');
@@ -22,7 +23,7 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTPS server.
  */
 
 var certificates = require('../certificates');
@@ -33,30 +34,34 @@ var option = {
 }
 var server = https.createServer(option, app);
 
+/*
+ * Create HTTP server.
+ */
+//var server = http.createServer(app);
+
+/*
+ * Export server.
+ */
+module.exports = server;
+
+/*
+ * ExpressWs
+ */
+
 expressWs(app, server);
+
 var video = require('../routes/video');
+var wsServer = require('../routes/wsServer');
+
 app.use('/', video);
-/*app.ws('/video-stream', (ws, req) => {
-    console.log('Client connected');
+app.use('/', wsServer);
 
-    ws.send(JSON.stringify({
-      action: 'init',
-      width: '960',
-      height: '540'
-    }));
+/*
+ * SocketIO
+ */
 
-    var videoStream = raspividStream({ rotation: 180 });
+require('../socket');
 
-    videoStream.on('data', (data) => {
-        ws.send(data, { binary: true }, (error) => { if (error) console.error(error); });
-    });
-
-    ws.on('close', () => {
-        console.log('Client left');
-        videoStream.removeAllListeners('data');
-    });
-});
-*/
 
 /**
  * Connect to db.
